@@ -35,7 +35,7 @@ namespace Task.ViewModel
             Items = new ObservableCollection<T>();
         }
 
-        // Метод для получения коллекции из базы данных (здесь вы можете реализовать вашу логику получения данных)
+        // Метод для получения коллекции из базы данных
         public async void LoadDataAsync()
         {
             try
