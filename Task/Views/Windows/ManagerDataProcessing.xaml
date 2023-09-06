@@ -8,7 +8,7 @@
         
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Окно работы с менеджерами" Height="900" Width="1350">
+        Title="Окно работы с менеджерами" Height="830" Width="1350">
 
     <Window.Resources>
         <vm:ForManagerViewModel x:Key="ForManagerViewModel"/>

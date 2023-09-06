@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:Task.ViewModel.ViewModelsForClientWindow"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Окно работы с клиентами" Height="900" Width="1350">
+        Title="Окно работы с клиентами" Height="830" Width="1350">
     
     <Window.Resources>
         <vm:ForClientViewModel x:Key="ForClientViewModel"/>
@@ -23,7 +23,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/> 
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
 
