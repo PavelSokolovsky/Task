@@ -24,25 +24,6 @@ namespace Task.Views.Windows
             InitializeComponent();
         }
 
-        private void ClientBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ClientDataProcessing clientDataProcessing = new ClientDataProcessing();
-            clientDataProcessing.Show();
-            this.Close();
-        }
-
-        private void ManagerBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ManagerDataProcessing managerDataProcessing = new ManagerDataProcessing();
-            managerDataProcessing.Show();
-            this.Close();
-        }
-
-        private void ProductBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ProductDataProcessing productDataProcessing = new ProductDataProcessing();
-            productDataProcessing.Show();
-            this.Close();
-        }
+       
     }
 }

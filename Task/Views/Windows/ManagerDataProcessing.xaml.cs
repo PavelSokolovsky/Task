@@ -25,14 +25,7 @@ namespace Task.Views.Windows
         {
             InitializeComponent();
 
-            
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ManagerWindow managerWindow = new ManagerWindow();
-            managerWindow.Show();
-            this.Close();
-        }
+    
     }
 }

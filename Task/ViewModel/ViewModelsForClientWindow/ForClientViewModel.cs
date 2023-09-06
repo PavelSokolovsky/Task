@@ -12,7 +12,7 @@ using Task.Models;
 
 namespace Task.ViewModel.ViewModelsForClientWindow
 {
-    public class ForClientViewModel : INotifyPropertyChanged
+    public class ForClientViewModel : BaseViewModel<Client>, INotifyPropertyChanged
     {
         // Событие, используемое для уведомления об изменениях в свойствах ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
@@ -105,16 +105,16 @@ namespace Task.ViewModel.ViewModelsForClientWindow
                 }
             }
         }
-        private ObservableCollection<Manager> managers;
-        public ObservableCollection<Manager> Managers
+        private ObservableCollection<Manager> managersForDataGrid;
+        public ObservableCollection<Manager> ManagersForDataGrid
         {
-            get { return managers; }
+            get { return managersForDataGrid; }
             set
             {
-                if (managers != value)
+                if (managersForDataGrid != value)
                 {
-                    managers = value;
-                    OnPropertyChanged(nameof(Managers));
+                    managersForDataGrid = value;
+                    OnPropertyChanged(nameof(ManagersForDataGrid));
                 }
             }
         }
@@ -243,10 +243,9 @@ namespace Task.ViewModel.ViewModelsForClientWindow
                 NewClientStatus = new ObservableCollection<ClientStatus>(context.ClientStatus.ToList());
                 NewManagers = new ObservableCollection<Manager>(context.Manager.ToList());
             }
-
             // Загрузка клиентов
-            LoadClients();
-
+            LoadDataAsync();
+           
             // Инициализация команд
             AddClientCommand = new RelayCommand(AddNewClient);
             DeleteClientCommand = new RelayCommand(DeleteClient, CanDeleteClient);
@@ -254,18 +253,7 @@ namespace Task.ViewModel.ViewModelsForClientWindow
         }
 
         // Метод для загрузки списка клиентов из базы данных
-        private void LoadClients()
-        {
-            using (var context = new TaskEntities())
-            {
-                ClientsForDataGrid = new ObservableCollection<Client>(context.Client.ToList());
-                ClientStatusForDataGrid = new ObservableCollection<ClientStatus>(context.ClientStatus.ToList());
-                Managers = new ObservableCollection<Manager>(context.Manager.ToList());
-                Clients = new ObservableCollection<Client>(context.Client.ToList());
-
-            }
-
-        }
+       
 
         // Добавление нового клиента
         private void AddNewClient()
@@ -295,10 +283,10 @@ namespace Task.ViewModel.ViewModelsForClientWindow
                         context.Client.Add(newClient);
                         context.SaveChanges();
                         MessageBox.Show("Новый клиент успешно добавлен");
-                        LoadClients();
+                        
 
                     }
-
+                    LoadDataAsync();
                 }
 
                 else
@@ -330,8 +318,8 @@ namespace Task.ViewModel.ViewModelsForClientWindow
                     {
                         context.Client.Remove(clientToDelete);
                         context.SaveChanges();
-                        Clients.Remove(SelectedClient);
-                        LoadClients();
+                        Items.Remove(SelectedClient);
+                        LoadDataAsync();
                     }
                 }
             }
@@ -362,7 +350,7 @@ namespace Task.ViewModel.ViewModelsForClientWindow
                         ClientName = string.Empty;
                         SelectedClientStatus = null;
                         SelectedManager = null;
-                        LoadClients();
+                        LoadDataAsync(); ;
                     }
                 }
             }

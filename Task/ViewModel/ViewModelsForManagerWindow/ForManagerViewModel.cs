@@ -13,30 +13,15 @@ using Task.Models;
 
 namespace Task.ViewModel.ViewModelsForManagerWindow
 {
-    public class ForManagerViewModel : INotifyPropertyChanged
+    public class ForManagerViewModel : BaseViewModel<Manager>, INotifyPropertyChanged
     {
         // Событие, используемое для уведомления об изменениях в свойствах ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
-
+        
         // Команды для добавления, удаления и обновления менеджеров
         public ICommand AddManagerCommand { get; private set; }
         public ICommand DeleteManagerCommand { get; private set; }
         public ICommand UpdateNameCommand { get; private set; }
-
-        // Коллекция менеджеров, отображаемая в пользовательском интерфейсе
-        private ObservableCollection<Manager> managers;
-        public ObservableCollection<Manager> Managers
-        {
-            get { return managers; }
-            set
-            {
-                if (managers != value)
-                {
-                    managers = value;
-                    OnPropertyChanged(nameof(Managers));
-                }
-            }
-        }
 
         // Имя нового менеджера, для добавления
         private string newManagerName;
@@ -99,22 +84,13 @@ namespace Task.ViewModel.ViewModelsForManagerWindow
         public ForManagerViewModel()
         {
             // Загрузка списка менеджеров из базы данных
-            LoadManagers();
+            LoadDataAsync();
 
-            // Инициализация команд для управления менеджерами
             AddManagerCommand = new RelayCommand(AddManager);
             DeleteManagerCommand = new RelayCommand(DeleteManager, CanDeleteManager);
             UpdateNameCommand = new RelayCommand(UpdateNewName);
         }
-
-        // Метод для загрузки списка менеджеров из базы данных
-        private void LoadManagers()
-        {
-            using (var context = new TaskEntities())
-            {
-                Managers = new ObservableCollection<Manager>(context.Manager.ToList());
-            }
-        }
+       
 
         // Метод для добавления нового менеджера
         private void AddManager()
@@ -143,10 +119,11 @@ namespace Task.ViewModel.ViewModelsForManagerWindow
                         context.Manager.Add(newManager);
                         context.SaveChanges();
                         MessageBox.Show("Новый менеджер успешно сохранён");
-                        LoadManagers();
+                        //LoadManagers();
+                        
 
                     }
-
+                    LoadDataAsync();
                 }
                 else
                 {
@@ -186,8 +163,8 @@ namespace Task.ViewModel.ViewModelsForManagerWindow
                     {
                         context.Manager.Remove(managerToDelete);
                         context.SaveChanges();
-                        Managers.Remove(SelectedManager);
-                        LoadManagers();
+                        Items.Remove(SelectedManager);
+                        LoadDataAsync();
                     }
                 }
             }
@@ -209,7 +186,7 @@ namespace Task.ViewModel.ViewModelsForManagerWindow
                         managerToUpdate.name = ManagerName;
                         context.SaveChanges();
                         MessageBox.Show("Вы успешно внесли изменения");
-                        LoadManagers();
+                        LoadDataAsync();
                         InputId = string.Empty;
                         ManagerName = string.Empty;
                     }
@@ -220,26 +197,24 @@ namespace Task.ViewModel.ViewModelsForManagerWindow
 
         // Метод для предоставления данных менеджера по введёному ID
         private void UpdateName()
-        {
-            if (!string.IsNullOrEmpty(InputId))
             {
-                using (var context = new TaskEntities())
+                if (!string.IsNullOrEmpty(InputId))
                 {
-                    Managers = new ObservableCollection<Manager>(context.Manager.ToList());
-                }
-                foreach (var manager in Managers)
-                {
-                    if (manager.id == Convert.ToInt32(InputId))
+                    int id = Convert.ToInt32(InputId);
+                    var manager = Items.FirstOrDefault(m => m.id == id);
+                    if (manager != null)
                     {
                         ManagerName = manager.name;
-                        break;
+                    }
+                    else
+                    {
+                        ManagerName = string.Empty;
                     }
                 }
-            }
-            if (string.IsNullOrEmpty(InputId))
-            {
-                ManagerName = string.Empty;
-            }
+                else
+                {
+                    ManagerName = string.Empty;
+                }
 
         }
 

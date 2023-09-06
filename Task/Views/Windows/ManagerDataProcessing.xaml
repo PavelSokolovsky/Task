@@ -8,12 +8,13 @@
         
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Окно работы с менеджерами" Height="700" Width="1350">
+        Title="Окно работы с менеджерами" Height="900" Width="1350">
 
     <Window.Resources>
         <vm:ForManagerViewModel x:Key="ForManagerViewModel"/>
-        
-        
+
+        <vm:BackToMainFromManagerWindow x:Key="BackToMainFromClientWindow"/>
+
         <vm:SortClientsByManagerViewModel x:Key="SortClientsByManagerViewModel"/>
     </Window.Resources>
 
@@ -31,7 +32,7 @@
 
         <DataGrid AutoGenerateColumns="False"
                   DataContext="{StaticResource ForManagerViewModel}"
-                  ItemsSource="{Binding Managers}"
+                  ItemsSource="{Binding Items}"
                   SelectedItem="{Binding SelectedManager}"
                   >
             <DataGrid.ColumnHeaderStyle>
@@ -216,7 +217,8 @@
                     Width="100"
                     Margin="0 500 0 0"
                     Content="Назад"
-                    Click="Button_Click"/>
+                    DataContext="{StaticResource BackToMainFromClientWindow}"
+                    Command="{Binding BackToMainFromManagerWindowCommand}"/>
         </StackPanel>
 
     </Grid>

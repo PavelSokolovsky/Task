@@ -7,10 +7,12 @@
         xmlns:vm="clr-namespace:Task.ViewModel.ViewModelsForProductWindow"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Окно работы с продуктами" Height="800" Width="1400">
+        Title="Окно работы с продуктами" Height="830" Width="1400">
 
     <Window.Resources>
         <vm:ForProductViewModel x:Key="ForProductViewModel"/>
+
+        <vm:BackToMainFromProductWindow x:Key="BackToMainFromProductWindow"/>
 
         <vm:SortProductsByClientViewModel x:Key="SortProductsByClientViewModel"/>
         
@@ -30,7 +32,7 @@
 
         <DataGrid AutoGenerateColumns="False"
                   DataContext="{StaticResource ForProductViewModel}"
-                  ItemsSource="{Binding Products}"
+                  ItemsSource="{Binding Items}"
                   SelectedItem="{Binding SelectedProduct}">
             <DataGrid.ColumnHeaderStyle>
             <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -266,7 +268,8 @@
                     Width="100"
                     Margin="0 600 0 0"
                     Content="Назад"
-                    Click="Button_Click"/>
+                    DataContext="{StaticResource BackToMainFromProductWindow}"
+                    Command="{Binding BackToMainFromProductWindowCommand}"/>
 
         </StackPanel>
 

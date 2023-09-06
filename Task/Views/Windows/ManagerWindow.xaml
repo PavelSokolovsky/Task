@@ -4,9 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task.Views.Windows"
+        xmlns:vm="clr-namespace:Task.ViewModel.ViewModelsForMainWindow"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Окно верификации менеджера" Height="450" Width="800">
+
+    <Window.Resources>
+
+        <vm:OpenDataProcessingWindows x:Key="OpenDataProcessingWindows"/>
+
+    </Window.Resources>
     
     <Grid>
 
@@ -28,7 +35,8 @@
                         BorderThickness="1"
                         BorderBrush="Black"
                         Name="ClientBtn"
-                        Click="ClientBtn_Click">
+                        DataContext="{StaticResource OpenDataProcessingWindows}"
+                        Command="{Binding OpenClientWindowCommand}">
                     <Button.Effect>
                         <DropShadowEffect ShadowDepth="2" Direction="90" Opacity="0.5" />
                     </Button.Effect>
@@ -46,7 +54,8 @@
                         BorderThickness="1"
                         BorderBrush="Black"
                         Name="ManagerBtn"
-                        Click="ManagerBtn_Click">
+                        DataContext="{StaticResource OpenDataProcessingWindows}"
+                        Command="{Binding OpenManagerWindowCommand}">
                     <Button.Effect>
                         <DropShadowEffect ShadowDepth="2" Direction="90" Opacity="0.5" />
                     </Button.Effect>
@@ -63,7 +72,8 @@
                         BorderThickness="1"
                         BorderBrush="Black"
                         Name="ProductBtn"
-                        Click="ProductBtn_Click">
+                        DataContext="{StaticResource OpenDataProcessingWindows}"
+                        Command="{Binding OpenProductWindowCommand}">
                     <Button.Effect>
                         <DropShadowEffect ShadowDepth="2" Direction="90" Opacity="0.5" />
                     </Button.Effect>

@@ -12,7 +12,7 @@ using Task.Models;
 
 namespace Task.ViewModel.ViewModelsForProductWindow
 {
-    internal class ForProductViewModel : INotifyPropertyChanged
+    public class ForProductViewModel : BaseViewModel<Product>, INotifyPropertyChanged
     {
         // Событие, используемое для уведомления об изменениях в свойствах ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
@@ -21,21 +21,6 @@ namespace Task.ViewModel.ViewModelsForProductWindow
         public ICommand AddProductCommand { get; private set; }
         public ICommand DeleteProductCommand { get; private set; }
         public ICommand UpdateProductDataCommand { get; private set; }
-
-        // Список продуктов для отображения в пользовательском интерфейсе
-        private ObservableCollection<Product> products;
-        public ObservableCollection<Product> Products
-        {
-            get { return products; }
-            set
-            {
-                if (products != value)
-                {
-                    products = value;
-                    OnPropertyChanged(nameof(Products));
-                }
-            }
-        }
 
         // Новое имя продукта для добавления
         private string newProductName;
@@ -182,21 +167,12 @@ namespace Task.ViewModel.ViewModelsForProductWindow
         public ForProductViewModel()
         {
             // Загрузка списка продуктов из базы данных
-            LoadProducts();
+            LoadDataAsync();
 
             // Инициализация команд для управления продуктами
             AddProductCommand = new RelayCommand(AddNewProduct);
             DeleteProductCommand = new RelayCommand(DeleteProduct, CanDeleteProduct);
             UpdateProductDataCommand = new RelayCommand(UpdateProductData);
-        }
-
-        // Загрузка списка продуктов из базы данных
-        private void LoadProducts()
-        {
-            using (var context = new TaskEntities())
-            {
-                Products = new ObservableCollection<Product>(context.Product.ToList());
-            }
         }
 
         // Добавление нового продукта
@@ -235,10 +211,10 @@ namespace Task.ViewModel.ViewModelsForProductWindow
                         context.Product.Add(newProduct);
                         context.SaveChanges();
                         MessageBox.Show("Новый продукт успешно добавлен");
-                        LoadProducts();
+                        
 
                     }
-
+                LoadDataAsync();
                 }
                 else
                 {
@@ -269,8 +245,8 @@ namespace Task.ViewModel.ViewModelsForProductWindow
                     {
                         context.Product.Remove(productToDelete);
                         context.SaveChanges();
-                        Products.Remove(SelectedProduct);
-                        LoadProducts();
+                        Items.Remove(SelectedProduct);
+                        LoadDataAsync();
                     }
                 }
             }
@@ -304,7 +280,7 @@ namespace Task.ViewModel.ViewModelsForProductWindow
                         ProductTypeOfEula = string.Empty;
                         ProductSubscriptionPeriod = string.Empty;
 
-                        LoadProducts();
+                        LoadDataAsync();
                     }
                 }
             }
@@ -316,34 +292,35 @@ namespace Task.ViewModel.ViewModelsForProductWindow
         // Предоставление данных продукта при выборе его ID
         private void UpdateProductName()
         {
+
             if (!string.IsNullOrEmpty(InputProductId))
             {
-                using (var context = new TaskEntities())
+                int id = Convert.ToInt32(InputProductId);
+                var product = Items.FirstOrDefault(m => m.id == id);
+                if (product != null)
                 {
-                    Products = new ObservableCollection<Product>(context.Product.ToList());
+                    ProductName = product.name;
+                    ProductPrice = Convert.ToString(product.price);
+                    ProductTypeOfEula = product.type;
+                    ProductSubscriptionPeriod = product.period;
                 }
-                foreach (var product in Products)
+                else
                 {
-                    if (product.id == Convert.ToInt32(InputProductId))
-                    {
-                        // Заполнение полей данными выбранного продукта
-                        ProductName = product.name;
-                        ProductPrice = Convert.ToString(product.price);
-                        ProductTypeOfEula = product.type;
-                        ProductSubscriptionPeriod = product.period;
-                        break;
-                    }
+                    ProductName = string.Empty;
+                    ProductPrice = string.Empty;
+                    ProductTypeOfEula = string.Empty;
+                    ProductSubscriptionPeriod = string.Empty;
                 }
             }
-            if (string.IsNullOrEmpty(InputProductId))
+            else
             {
                 ProductName = string.Empty;
                 ProductPrice = string.Empty;
                 ProductTypeOfEula = string.Empty;
                 ProductSubscriptionPeriod = string.Empty;
             }
-
         }
+       
 
         // Проверка возможности удаления продукта
         private bool CanDeleteProduct()
